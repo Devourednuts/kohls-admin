@@ -1,4 +1,5 @@
-local vEnv = { _G = _G, shared = shared }
+local vEnv = getfenv()
+vEnv.script = nil
 
 return function()
 	return vEnv
