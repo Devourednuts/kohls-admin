@@ -693,12 +693,16 @@ _K.Remote.Command:Connect(function(player: Player, message: string)
 		end
 
 		_K.Remote.Explorer:Connect(function(player: Player, action: string, data: any, selected: Instance?)
-			local explorerRank = _K.Auth.hasCommand(player.UserId, "explorer")
-			if not explorerRank then
-				return
-			end
+		local explorerRank = _K.Auth.hasCommand(player.UserId, "explorer")
+		if not explorerRank then
+			return
+		end
 
-			if action == "PASTE" and selected then
+		if type(data) ~= "table" then
+			return
+		end
+
+		if action == "PASTE" and selected then
 				for _, copy: Instance in data do
 					local wasArchivable = copy.Archivable
 					copy.Archivable = true
