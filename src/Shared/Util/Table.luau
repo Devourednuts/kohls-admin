@@ -60,6 +60,9 @@ function Table.deepCompare(a: any, b: any)
 	if type(a) ~= "table" or type(b) ~= "table" then
 		return a == b
 	end
+	if Table.countKeys(a) ~= Table.countKeys(b) then
+		return false
+	end
 	for k, v in a do
 		if not Table.deepCompare(v, b[k]) then
 			return false
