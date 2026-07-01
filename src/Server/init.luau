@@ -645,36 +645,41 @@ _K.Remote.Command:Connect(function(player: Player, message: string)
 
 		-- handle ban events
 		_K.Remote.Ban:Connect(function(player: Player, userId: number, reason: string?, duration: number?)
-			local canBan = _K.Auth.hasCommand(player.UserId, "ban")
-			if not (tonumber(userId) and canBan) then
-				return
-			end
+		local canBan = _K.Auth.hasCommand(player.UserId, "ban")
+		userId = tonumber(userId) :: number
+		if not (userId and canBan) then
+			return
+		end
 
-			local fauxArg = {
-				_K = _K,
-				definition = _K.Registry.commands.ban.args[1],
-				command = {
-					from = player.UserId,
-					fromRank = _K.Auth.getRank(player.UserId),
-					fromRole = {},
-					rank = canBan or 0,
-				},
-			}
+		if duration ~= nil and type(duration) ~= "number" then
+			return
+		end
 
-			_K.Data.targetLimits[player.UserId] = 0
-			if (reason == nil or type(reason) == "string") and _K.Auth.targetUserArgument(fauxArg, userId, userId) then
-				if
-					not _K.Auth.hasPermission(player.UserId, "banasync") or not _K.Auth.hasRestrictedRole(player.UserId)
-				then
-					duration = 0
-				end
-				if reason and #reason > 1024 then
-					reason = string.sub(reason, 1, 1024)
-				end
-				_K.log(`{_K.getCommandPrefix()}ban {userId} {duration} {reason}`, "COMMAND", player.UserId)
-				_K.Auth.banUsers({ userId }, reason, duration, player.UserId)
+		local fauxArg = {
+			_K = _K,
+			definition = _K.Registry.commands.ban.args[1],
+			command = {
+				from = player.UserId,
+				fromRank = _K.Auth.getRank(player.UserId),
+				fromRole = {},
+				rank = canBan or 0,
+			},
+		}
+
+		_K.Data.targetLimits[player.UserId] = 0
+		if (reason == nil or type(reason) == "string") and _K.Auth.targetUserArgument(fauxArg, userId, userId) then
+			if
+				not _K.Auth.hasPermission(player.UserId, "banasync") or not _K.Auth.hasRestrictedRole(player.UserId)
+			then
+				duration = 0
 			end
-		end)
+			if reason and #reason > 1024 then
+				reason = string.sub(reason, 1, 1024)
+			end
+			_K.log(`{_K.getCommandPrefix()}ban {userId} {duration} {reason}`, "COMMAND", player.UserId)
+			_K.Auth.banUsers({ userId }, reason, duration, player.UserId)
+		end
+	end)
 
 		_K.Remote.Unban:Connect(function(player: Player, userId: number)
 			local ban = _K.Data.bans[tostring(userId)]
