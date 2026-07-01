@@ -90,7 +90,8 @@ function Command:requestCommand(targetPlayer: Player, args, run)
 				Sound = "Call_Leave",
 			})
 		end
-		-- TODO: log the command request!
+		local prefix = self._K.getCommandPrefix()
+		self._K.log(`{prefix}{self.alias} {targetPlayer.Name} (requested, accepted)`, "COMMAND", self.from)
 		self._K.Hook.postCommand:Fire(self)
 	end
 
