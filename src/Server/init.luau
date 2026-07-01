@@ -467,8 +467,12 @@ return function(_K)
 		-- server network events
 		local lastLog, cachedLogsBuffer
 		_K.Remote.Init:Connect(function(player, initData)
-			local attributes = initData.Attributes
-			if attributes then
+		if type(initData) ~= "table" then
+			return
+		end
+
+		local attributes = initData.Attributes
+		if attributes then
 				for attribute, valueType in attributeSchema do
 					local value = attributes[attribute]
 					if typeof(value) == valueType then
