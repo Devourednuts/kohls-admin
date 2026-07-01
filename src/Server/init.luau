@@ -600,7 +600,12 @@ _K.Remote.Command:Connect(function(player: Player, message: string)
 
 			local changeStrings = {}
 			for key, value in changes do
-				if _K.Data.savedSettings[key] == nil then
+				local existing = _K.Data.savedSettings[key]
+				if existing == nil then
+					continue
+				end
+
+				if typeof(value) ~= typeof(existing) then
 					continue
 				end
 
