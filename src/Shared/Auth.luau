@@ -156,20 +156,16 @@ function Auth.unbanUsers(userIds: { number }, fromUserId: number?, forceBanAsync
 		end
 	end
 
-	if forceBanAsync and #unbanAsync > 0 and not Data.SEPARATE_DATASTORE and not Util.RunContext.IsStudio then
+if forceBanAsync and #unbanAsync > 0 and not Data.SEPARATE_DATASTORE and not Util.RunContext.IsStudio then
 		for i = 1, #unbanAsync, 50 do
 			local chunk = table.move(unbanAsync, i, math.min(#unbanAsync, i + 49), 1, {})
-			local attempt = 0
-			repeat
-				attempt += 1
-				local ok, err = pcall(Players.UnbanAsync, Players, { UserIds = chunk, ApplyToUniverse = true })
-				if ok then
-					break
-				end
+			local ok, err = Util.Retry(function()
+				return Players:UnbanAsync({ UserIds = chunk, ApplyToUniverse = true })
+			end, 10)
+			if not ok then
 				local code = string.match(err, '"code": "([^"]+)"')
-				warn(`UnbanAsync failed: {code or err}, trying again...`)
-				task.wait(2 ^ attempt)
-			until nil
+				warn(`UnbanAsync failed after 10 attempts: {code or err}`)
+			end
 		end
 	end
 
