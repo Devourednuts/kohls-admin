@@ -225,7 +225,6 @@ function Auth.userRoleAdd(userId: number, roleId: Role, persist: boolean?): bool
 		}
 		Data.members[key] = member
 		roleAdded = true
-		task.spawn(updateMemberName, member, userId)
 	else
 		if not table.find(member.roles, roleId) then
 			table.insert(member.roles, roleId)
