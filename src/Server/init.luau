@@ -557,9 +557,12 @@ return function(_K)
 		_ = _K.Remote.SetCore
 		_ = _K.Remote.VIPNotification
 
-		_K.Remote.Command:Connect(function(player: Player, message: string)
-			_K.Process.runCommands(_K, player.UserId, message)
-		end)
+_K.Remote.Command:Connect(function(player: Player, message: string)
+		if type(message) ~= "string" then
+			return
+		end
+		_K.Process.runCommands(_K, player.UserId, message)
+	end)
 
 		-- handle custom command prefix
 		_K.Remote.PlayerPrefix:Connect(function(player, prefix)
