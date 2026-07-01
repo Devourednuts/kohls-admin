@@ -84,6 +84,8 @@ function Table.deepMerge(to: Dict, from: Dict, appendArrays: boolean?): Dict
 		for key, value in from do
 			if to[key] and type(value) == "table" then
 				Table.deepMerge(to[key], value, appendArrays)
+			elseif type(value) == "table" then
+				to[key] = Table.deepCopy(value)
 			else
 				to[key] = value
 			end
