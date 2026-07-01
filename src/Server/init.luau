@@ -575,12 +575,16 @@ _K.Remote.Command:Connect(function(player: Player, message: string)
 
 		-- handle changing of settings
 		_K.Remote.Settings:Connect(function(player, changes)
-			local themeAuthority = _K.Data.settings.changeThemeAuthority
-			--TODO: make the Client authority save each players' theming
+		if type(changes) ~= "table" then
+			return
+		end
 
-			if not _K.Auth.hasPermission(player.UserId, "settings") then
-				return
-			end
+		local themeAuthority = _K.Data.settings.changeThemeAuthority
+		--TODO: make the Client authority save each players' theming
+
+		if not _K.Auth.hasPermission(player.UserId, "settings") then
+			return
+		end
 
 			if changes.freeAdmin then
 				if type(changes.freeAdmin) ~= "table" then
